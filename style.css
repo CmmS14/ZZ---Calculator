@@ -1,7 +1,7 @@
 *{
     margin: 0;
     padding: 0;
-    color: #ffefc9;
+    color: #d6c8e9;
     font-size: 24px;
 }
 input{
@@ -9,27 +9,27 @@ input{
     width: 60%;
     padding: 6px 12px;
     font-size: 14px;
-    color: #3a224f;
-    background-color: #f0eba8;    
+    color: #fff;
+    background-color: #9bc9e9;    
 }
 button{
     width: 70px;
     height: 70px;
-    background-color: #36777a;
-    color: #e3755f;
-    border-color:#a34473;
+    background-color: #c57aa1;
+    border-color:#c57aa1;
     border-radius: 3px;
+}
+span{
+    font-size: inherit;
 }
 .container{
     width: 720px;
     margin-left: auto;
     margin-right: auto;
     padding: 10px;
-    background-color: #4e2557;
+    background-color: #6c83d0;
 }
 #calc-head{
-    margin-left: auto;
-    margin-right: auto;
     padding: 5px;
     width: 100%;
 }
@@ -41,15 +41,23 @@ button{
     padding: 5px;
 }
 #equals{
-    background-color: #1f2e52;
+    background-color: #9bc9e9;
 }
 #clear{
-    background-color: #c7506c;
-    color: #3a224f;
+    background-color: #be347c;
+    border-color: #f176b6;
+    color: #c2addf;
+}
+#settings{
+    font-size: 14px;
+    margin-left: 10px;
+}
+#settings span{
+    margin-right: 10px;
 }
 .num{
-    background-color: #2e5c6b;
-    color: #ffd7a3;
+    background-color: #eca7cc;
+    color: #fff;
 }
 .d-inline-block{
     display: inline-block;
@@ -57,12 +65,6 @@ button{
 .float-left{
     float: left;
 }
-.clearfix:after {
-    content: "";
-    display: block;
-    clear: both;
-}
-
 .mb{
     margin-bottom: 5px;
 }
@@ -71,4 +73,7 @@ button{
 }
 .ms{
     margin-left: 5px;
+}
+.muted{
+    color: #ffd7a346!important;
 }

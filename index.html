@@ -12,8 +12,11 @@
 <body>
     <div class="container">
         <div id="calc-head">
-            <input id="equation" type="text">
-            <div><div id='equation_container' class="d-inline-block"></div><div id="result" class="d-inline-block"></div></div>
+            <div id="settings"><span id="radiant" class="muted">rad</span> <span id="degree">°</span></div>
+            <input id="equation" type="text" class="me">
+            <span> = </span>
+            <div id="result" class="d-inline-block"></div>
+            <div id='errorbox'></div>
         </div>
         <div id="calc-body">
             <div id="left-column" class="d-inline-block">
@@ -41,23 +44,29 @@
             <div id="right-column" class="d-inline-block ms">
                 <div class="row mb">
                     <button id="plus" class="me" onclick="pressedKey(this)">+</button>
-                    <button id="square_root" class="me" onclick="pressedKey(this)">√</button>
+                    <button id="bracket_open" class="me" onclick="pressedKey(this)">(</button>
+                    <button id="bracket_close" class="me" onclick="pressedKey(this)">)</button>
+                    <button id="pi" class="me" onclick="pressedKey(this)">π</button>
                     <button id="clear" class="me" onclick="pressedKey(this)">C</button>
                 </div>
                 <div class="row mb">
                     <button id="minus" class="me" onclick="pressedKey(this)">-</button>
                     <button id="square" class="me" onclick="pressedKey(this)">x²</button>
                     <button id="power" class="me" onclick="pressedKey(this)">xⁿ</button>
+                    <button id="square_root" class="me" onclick="pressedKey(this)">√</button>
+                    <button id="radiant_degree" class="me" onclick="pressedKey(this)">rad<span>|</span>°</button>
                 </div>
                 <div class="row mb">
                     <button id="multiply" class="me" onclick="pressedKey(this)">*</button>
                     <button id="log" class="me" onclick="pressedKey(this)">log</button>
-                    <button id="ln" class="me" onclick="pressedKey(this)">ln</button>
+                    <button id="sin" class="me" onclick="pressedKey(this)">sin</button>
+                    <button id="cos" class="me" onclick="pressedKey(this)">cos</button>
                 </div>
                 <div class="row mb">
                     <button id="divide" class="me" onclick="pressedKey(this)">/</button>
-                    <button id="bracket_open" class="me" onclick="pressedKey(this)">(</button>
-                    <button id="bracket_close" class="me" onclick="pressedKey(this)">)</button>
+                    <button id="ln" class="me" onclick="pressedKey(this)">ln</button>
+                    <button id="tan" class="me" onclick="pressedKey(this)">tan</button>
+                    <button id="cot" class="me" onclick="pressedKey(this)">cot</button>
                 </div>
 
 

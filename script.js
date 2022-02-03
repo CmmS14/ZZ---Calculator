@@ -1,8 +1,11 @@
+var isRadiant = false;
+
 const equation = document.getElementById('equation');
 const equals = document.getElementById('equals');
 const resultOutput = document.getElementById('result');
 const equationContainer = document.getElementById('equation_container');
-
+const radiant = document.getElementById('radiant');
+const degree = document.getElementById('degree');
 
 equation.addEventListener('keydown', checkInput);
 equals.addEventListener('click', findResult);
@@ -17,7 +20,7 @@ function checkInput(e) {
 function pressedKey(e) {
     switch (e.textContent) {
         case '√': {
-            equation.value += '√()';
+            equation.value += '√(';
             break;
         }
         case 'x²': {
@@ -36,8 +39,37 @@ function pressedKey(e) {
             equation.value += 'ln(';
             break;
         }
+        case 'sin': {
+            equation.value += 'sin(';
+            break;
+        }
+        case 'cos': {
+            equation.value += 'cos(';
+            break;
+        }
+        case 'tan': {
+            equation.value += 'tan(';
+            break;
+        }
+        case 'cot': {
+            equation.value += 'cot(';
+            break;
+        }
         case 'C': {
             equation.value = '';
+            resultOutput.textContent = '';
+            break;
+        }
+        case 'rad|°': {
+            if (isRadiant) {
+                isRadiant = false;
+                radiant.classList.add('muted');
+                degree.classList.remove('muted');
+            } else {
+                isRadiant = true;
+                radiant.classList.remove('muted');
+                degree.classList.add('muted');
+            }
             break;
         }
         default: {
@@ -52,8 +84,7 @@ function findResult() {
     let isNewNum = true;
     let bracketIndexes = [];
     let operatorIndex = 0;
-    let singleOperatorCount = 0;
-    let index = 0;
+    let i = 0;
     let numbers = [];
     let operators = [];
     let val;
@@ -68,9 +99,10 @@ function findResult() {
                 val += char;
             }
         } else {
-            if (val != undefined && !isNewNum) {
+            if ((val != undefined && !isNewNum) && char != '.') {
                 numbers.push(Number(val));
             }
+            console.log(numbers);
             isNewNum = true;
             switch (char) {
                 case '+': {
@@ -100,22 +132,51 @@ function findResult() {
                 }
                 case '√': {
                     operators.push('√');
-                    singleOperatorCount++;
+                    break;
+                }
+                case '.': {
+                    if (isNumeric.test(equArray[i - 1]) && i != 0) {
+                        val += '.';
+                    } else {
+                        val = '0.';
+                    }
+                    isNewNum = false;
                     break;
                 }
                 case '^': {
                     operators.push('^');
-                    singleOperatorCount++;
                     break;
                 }
-                case 'log': {
-                    operators.push('log');
-                    singleOperatorCount++;
+                case 'l': {
+                    if (equArray[i + 1] == 'o') {
+                        operators.push('log');
+                    } else if (equArray[i + 1] == 'n') {
+                        operators.push('ln');
+                    }
                     break;
                 }
-                case 'ln': {
-                    operators.push('ln');
-                    singleOperatorCount++;
+                case 'c': {
+                    if (equArray[i + 2] == 's') {
+                        operators.push('cos');
+                    } else if (equArray[i + 2] == 't') {
+                        operators.push('cot');
+                    }
+                    break;
+                }
+                case 's': {
+                    if (equArray[i + 1] == 'i') {
+                        operators.push('sin');
+                    }
+                    break;
+                }
+                case 't': {
+                    if (equArray[i + 1] == 'a') {
+                        operators.push('tan');
+                    }
+                    break;
+                }
+                case 'π': {
+                    numbers.push(Math.PI);
                     break;
                 }
                 default: {
@@ -124,9 +185,11 @@ function findResult() {
             }
             operatorIndex++;
         }
-        index++;
+        if (isNumeric.test(Number(equArray[equArray.length - 1])) && i == (equArray.length - 1)) {
+            numbers.push(Number(val));
+        }
+        i++;
     });
-    numbers.push(Number(val)); //3*(2+(5-1)/2)-5 | 3 2 5 1 2 5 | * ( + ( - ) / ) - |
 
     bracketIndexes.reverse().forEach(i => {
         let k = 0;
@@ -154,21 +217,23 @@ function findResult() {
             }
             nums.push(numbers[k + counter]);
         } else {
-            ops.push(operators[i - 1]);
-            nums.push(numbers[k])
+            nums.push(numbers[k]);
         }
         numbers[k] = calculate(ops, nums);
-        console.log(ops, nums, i);
-        if (singleOperatorCount > 0) {
-            operators.splice(i - 1, counter + 3);
-        } else {
-            operators.splice(i, counter + 2);
-        }
-        numbers.splice(k + 1, counter);
-        console.log(operators, numbers, i);
-    });
 
-    resultOutput.textContent = calculate(operators, numbers);
+        operators.splice(i, counter + 2);
+        numbers.splice(k + 1, counter);
+
+        if (operators[i - 1] == 'log' || operators[i - 1] == 'ln' || operators[i - 1] == '√') {
+            numbers[k] = calculate(operators[i - 1], numbers[k])
+        }
+    });
+    if (numbers.length == 1) {
+        resultOutput.textContent = numbers[0];
+    } else {
+        resultOutput.textContent = calculate(operators, numbers);
+    }
+    equation.value = ''
 }
 
 function calculation(operator, number1, number2) {
@@ -204,6 +269,38 @@ function calculation(operator, number1, number2) {
         }
         case 'ln': {
             result = Math.log(number1);
+            break;
+        }
+        case 'sin': {
+            if (isRadiant) {
+                result = Math.sin(number1);
+            } else {
+                result = Math.sin(number1 * Math.PI / 180);
+            }
+            break;
+        }
+        case 'cos': {
+            if (isRadiant) {
+                result = Math.cos(number1);
+            } else {
+                result = Math.cos(number1 * Math.PI / 180);
+            }
+            break;
+        }
+        case 'tan': {
+            if (isRadiant) {
+                result = Math.tan(number1);
+            } else {
+                result = Math.tan(number1 * Math.PI / 180);
+            }
+            break;
+        }
+        case 'cot': {
+            if (isRadiant) {
+                result = 1 / Math.tan(number1);
+            } else {
+                result = 1 / Math.tan(number1 * Math.PI / 180);
+            }
             break;
         }
     }
