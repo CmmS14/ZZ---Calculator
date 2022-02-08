@@ -1,4 +1,5 @@
 var isRadiant = false;
+var isShown = false;
 
 const equation = document.getElementById('equation');
 const equals = document.getElementById('equals');
@@ -6,9 +7,12 @@ const resultOutput = document.getElementById('result');
 const equationContainer = document.getElementById('equation_container');
 const radiant = document.getElementById('radiant');
 const degree = document.getElementById('degree');
+const showMore = document.getElementById('showMore');
+const moreOperators = document.getElementById('right-column-bottom');
 
 equation.addEventListener('keydown', checkInput);
 equals.addEventListener('click', findResult);
+showMore.addEventListener('click', toggleMore);
 
 function checkInput(e) {
     let allow_char = [8, 13, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 188, 189, 190, 223];
@@ -58,6 +62,8 @@ function pressedKey(e) {
         case 'C': {
             equation.value = '';
             resultOutput.textContent = '';
+            resultOutput.classList.add('d-none');
+            resultOutput.classList.remove('d-inline-block');
             break;
         }
         case 'rad|°': {
@@ -102,7 +108,6 @@ function findResult() {
             if ((val != undefined && !isNewNum) && char != '.') {
                 numbers.push(Number(val));
             }
-            console.log(numbers);
             isNewNum = true;
             switch (char) {
                 case '+': {
@@ -186,11 +191,18 @@ function findResult() {
             operatorIndex++;
         }
         if (isNumeric.test(Number(equArray[equArray.length - 1])) && i == (equArray.length - 1)) {
-            numbers.push(Number(val));
+            let ops = [];
+            operators.forEach(op => {
+                if (op != '(' && op != ')' && op != 'log' && op != 'ln' && op != 'cos' && op != 'sin' && op != 'tan' && op != 'cot' && op != '√') {
+                    ops.push(op);
+                }
+            });
+            if (ops.length == numbers.length) {
+                numbers.push(Number(val));
+            }
         }
         i++;
     });
-
     bracketIndexes.reverse().forEach(i => {
         let k = 0;
         let counter = 0;
@@ -225,14 +237,26 @@ function findResult() {
         numbers.splice(k + 1, counter);
 
         if (operators[i - 1] == 'log' || operators[i - 1] == 'ln' || operators[i - 1] == '√') {
-            numbers[k] = calculate(operators[i - 1], numbers[k])
+            numbers[k] = calculation(operators[i - 1], numbers[k])
         }
     });
-    if (numbers.length == 1) {
-        resultOutput.textContent = numbers[0];
+    if (numbers.length == 0) {
+        resultOutput.textContent = 'ERROR!'
+    } else if (numbers.length == 1) {
+        if (numbers[0] == '' || numbers[0] == undefined || numbers[0] == NaN) {
+            resultOutput.textContent = 'ERROR!'
+        } else {
+            resultOutput.textContent = ' = ' + numbers[0];
+        }
     } else {
-        resultOutput.textContent = calculate(operators, numbers);
+        if (calculate(operators, numbers) == '' || calculate(operators, numbers) == undefined || calculate(operators, numbers) == NaN) {
+            resultOutput.textContent = 'ERROR!'
+        } else {
+            resultOutput.textContent = ' = ' + calculate(operators, numbers);
+        }
     }
+    resultOutput.classList.remove('d-none');
+    resultOutput.classList.add('d-inline-block');
     equation.value = ''
 }
 
@@ -345,4 +369,16 @@ function calculate(operators, numbers) {
     }
 
     return result;
+}
+
+function toggleMore() {
+    if (isShown) {
+        isShown = false;
+        moreOperators.classList.add('d-none');
+        moreOperators.classList.remove('d-block');
+    } else {
+        isShown = true;
+        moreOperators.classList.add('d-block');
+        moreOperators.classList.remove('d-none');
+    }
 }
